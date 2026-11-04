@@ -1,8 +1,26 @@
+import controller.Controller;
+import model.PrgState;
+import model.stmt.IStmt;
+import repository.Repository;
+import view.Examples;
+import view.ExitCommand;
+import view.RunExampleCommand;
 import view.TextMenu;
+
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        List<IStmt> programs = List.of(Examples.EX1, Examples.EX2, Examples.EX3, Examples.EX4, Examples.EX5);
         TextMenu menu = new TextMenu();
+        menu.addCommand(new ExitCommand("0", "exit"));
+        for (int i = 0; i < programs.size(); i++) {
+            IStmt program = programs.get(i);
+            var repo = new Repository(PrgState.of(program), "log" + (i + 1) + ".txt");
+            var controller = new Controller(repo, true);
+            menu.addCommand(new RunExampleCommand(String.valueOf(i + 1),
+                    program.toString(), controller));
+        }
         menu.show();
     }
 }

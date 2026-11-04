@@ -39,4 +39,14 @@ class MyStackTest {
         stack.push(42);
         assertFalse(stack.isEmpty());
     }
+
+    @Test
+    void isListReversed() {
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+
+        assertEquals(3, stack.toList().getFirst());
+    }
+
 }

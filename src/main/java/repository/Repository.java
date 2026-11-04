@@ -1,18 +1,35 @@
 package repository;
 
+import exceptions.MyException;
+import exceptions.RepositoryException;
 import model.PrgState;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Repository implements IRepository{
-    private final List<PrgState> list = new ArrayList<>();
+    private final List<PrgState> states = new ArrayList<>();
+    private final String logFilePath;
 
-    public Repository(PrgState state) {
-        this.list.add(state);
+    public Repository(PrgState initial, String logFilePath) {
+        states.add(initial);
+        this.logFilePath = logFilePath;
     }
 
     @Override public PrgState getCrtPrg() {
-        return list.getFirst();
+        return states.getFirst();
+    }
+
+    @Override
+    public void logPrgStateExec() throws MyException {
+        try (var logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) { // append
+            logFile.println(getCrtPrg().toLogString());
+        } catch (IOException e) {
+            throw new RepositoryException("cannot write the log file " + logFilePath + ": " + e.getMessage());
+        }
     }
 }

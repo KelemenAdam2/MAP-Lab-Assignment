@@ -5,22 +5,23 @@ import exceptions.StatementException;
 import model.PrgState;
 import model.stmt.IStmt;
 import repository.IRepository;
-import repository.Repository;
 
 public record Controller(IRepository repo, boolean dflag) {
 
-    public PrgState oneStep(PrgState state) throws MyException {
+    public void oneStep(PrgState state) throws MyException {
         var stack = state.getExeStack();
         if (stack.isEmpty()) throw new StatementException("program state stack is empty");
         IStmt crtStmt = stack.pop();
-        return crtStmt.execute(state);
+        crtStmt.execute(state);
     }
 
     public void allStep() throws MyException {
         PrgState prg = repo.getCrtPrg();
-        display(prg); // only if the display flag is on
+        repo.logPrgStateExec();
+        display(prg);
         while (!prg.getExeStack().isEmpty()) {
             oneStep(prg);
+            repo.logPrgStateExec();
             display(prg);
         }
     }

@@ -3,9 +3,6 @@ package model.stmt;
 import exceptions.MyException;
 import exceptions.StatementException;
 import model.PrgState;
-import model.adt.MyDictionary;
-import model.adt.MyList;
-import model.adt.MyStack;
 import model.exp.ValueExp;
 import model.value.BoolValue;
 import model.value.IntValue;
@@ -19,7 +16,7 @@ class AssignStmtTest {
 
     @BeforeEach
     void setUp() throws MyException {
-        state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
+        state = PrgState.of(new NopStmt());
         state.getExeStack().pop();
     }
 
