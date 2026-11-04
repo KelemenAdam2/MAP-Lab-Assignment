@@ -3,13 +3,12 @@ package model.stmt;
 import exceptions.MyException;
 import exceptions.StatementException;
 import model.PrgState;
-import model.adt.MyDictionary;
-import model.adt.MyList;
-import model.adt.MyStack;
 import model.type.BoolType;
 import model.type.IntType;
+import model.type.StringType;
 import model.value.BoolValue;
 import model.value.IntValue;
+import model.value.StringValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,7 @@ class VarDeclStmtTest {
 
     @BeforeEach
     void setUp() throws MyException {
-        state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
+        state = PrgState.of(new NopStmt());
         state.getExeStack().pop();
     }
 
@@ -38,6 +37,14 @@ class VarDeclStmtTest {
         stmt.execute(state);
         assertTrue(state.getSymTable().isDefined("b"));
         assertEquals(new BoolValue(false), state.getSymTable().lookup("b"));
+    }
+
+    @Test
+    void declaresStringVariableWithDefaultValue() throws MyException {
+        IStmt stmt = new VarDeclStmt("s", new StringType());
+        stmt.execute(state);
+        assertTrue(state.getSymTable().isDefined("s"));
+        assertEquals(new StringValue(""), state.getSymTable().lookup("s"));
     }
 
     @Test

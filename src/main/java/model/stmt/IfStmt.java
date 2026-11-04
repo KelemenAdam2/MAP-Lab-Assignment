@@ -20,5 +20,5 @@ public record IfStmt(IExp cond, IStmt thenS, IStmt elseS) implements IStmt{// S5
             state.getExeStack().push(elseS);
         return state;
     }
-    @Override public String toString() { return "if" + cond + "then" + thenS + "else" + elseS; }
+    @Override public String toString() { return "if " + cond + " then " + thenS + " else " + elseS; }
 }

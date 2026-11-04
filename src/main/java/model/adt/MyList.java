@@ -1,7 +1,6 @@
 package model.adt;
 
 import exceptions.ADTException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,4 +16,5 @@ public class MyList<T> implements IList<T>{
 
     @Override public int size() {return list.size();}
     @Override public String toString() { return list.toString(); }
+    @Override public List<T> toList() { return List.copyOf(list); }
 }

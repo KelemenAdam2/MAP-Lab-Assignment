@@ -1,7 +1,6 @@
 package model.adt;
 
 import exceptions.ADTException;
-import model.value.IValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,4 +24,13 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override public String toString() { return dict.toString(); }
+
+    @Override public void remove(K key) throws ADTException{
+        if (!dict.containsKey(key)) throw new ADTException("key not found");
+        dict.remove(key);
+    }
+
+    @Override public Map<K, V> toMap(){
+        return Map.copyOf(dict);
+    }
 }

@@ -2,9 +2,6 @@ package model.stmt;
 
 import exceptions.MyException;
 import model.PrgState;
-import model.adt.MyDictionary;
-import model.adt.MyList;
-import model.adt.MyStack;
 import model.exp.ValueExp;
 import model.value.IntValue;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +14,7 @@ class CompStmtTest {
 
     @BeforeEach
     void setUp() throws MyException {
-        state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
+        state = PrgState.of(new NopStmt());
         state.getExeStack().pop();
     }
 
