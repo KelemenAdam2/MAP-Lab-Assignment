@@ -4,6 +4,7 @@ import exceptions.MyException;
 import exceptions.StatementException;
 import model.PrgState;
 import model.adt.MyDictionary;
+import model.adt.MyHeap;
 import model.adt.MyList;
 import model.adt.MyStack;
 import model.stmt.IStmt;
@@ -29,7 +30,7 @@ class ControllerTest {
 
     @BeforeEach
     void setUp() throws MyException {
-        emptyState = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyDictionary<>(), new NopStmt());
+        emptyState = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyDictionary<>(), new MyHeap(), new NopStmt());
         emptyState.getExeStack().pop();
         emptyController = new Controller(new Repository(emptyState, dir.toString()), false);
     }
