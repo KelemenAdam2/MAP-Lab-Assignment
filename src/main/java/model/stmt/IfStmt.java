@@ -11,7 +11,7 @@ public record IfStmt(IExp cond, IStmt thenS, IStmt elseS) implements IStmt{// S5
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
-        IValue c = cond.eval(state.getSymTable());
+        IValue c = cond.eval(state.getSymTable(),  state.getHeap());
         if (!(c instanceof BoolValue(boolean b)))
             throw new StatementException("condition is not a boolean");
         if (b)
