@@ -10,6 +10,9 @@ import model.adt.MyStack;
 import model.stmt.IStmt;
 import model.stmt.NopStmt;
 import model.value.IntValue;
+import model.value.RefValue;
+import model.type.IntType;
+import model.type.RefType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -99,6 +102,53 @@ class ControllerTest {
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(5), state.getOut().get(0));
+    }
+
+    @Test
+    void completeExecutionOfExample6PrintsRefValues() throws MyException {
+        PrgState state = run(Examples.EX6);
+        assertTrue(state.getExeStack().isEmpty());
+        assertEquals(2, state.getOut().size());
+        assertEquals(new RefValue(1, new IntType()), state.getOut().get(0));
+        assertEquals(new RefValue(2, new RefType(new IntType())), state.getOut().get(1));
+    }
+
+    @Test
+    void completeExecutionOfExample7PrintsTwentyAndTwentyFive() throws MyException {
+        PrgState state = run(Examples.EX7);
+        assertTrue(state.getExeStack().isEmpty());
+        assertEquals(2, state.getOut().size());
+        assertEquals(new IntValue(20), state.getOut().get(0));
+        assertEquals(new IntValue(25), state.getOut().get(1));
+    }
+
+    @Test
+    void completeExecutionOfExample8PrintsTwentyAndThirtyFive() throws MyException {
+        PrgState state = run(Examples.EX8);
+        assertTrue(state.getExeStack().isEmpty());
+        assertEquals(2, state.getOut().size());
+        assertEquals(new IntValue(20), state.getOut().get(0));
+        assertEquals(new IntValue(35), state.getOut().get(1));
+    }
+
+    @Test
+    void completeExecutionOfExample9PrintsTwenty() throws MyException {
+        PrgState state = run(Examples.EX9);
+        assertTrue(state.getExeStack().isEmpty());
+        assertEquals(1, state.getOut().size());
+        assertEquals(new IntValue(20), state.getOut().get(0));
+    }
+
+    @Test
+    void completeExecutionOfExample10PrintsFourThreeTwoOneZero() throws MyException {
+        PrgState state = run(Examples.EX10);
+        assertTrue(state.getExeStack().isEmpty());
+        assertEquals(5, state.getOut().size());
+        assertEquals(new IntValue(4), state.getOut().get(0));
+        assertEquals(new IntValue(3), state.getOut().get(1));
+        assertEquals(new IntValue(2), state.getOut().get(2));
+        assertEquals(new IntValue(1), state.getOut().get(3));
+        assertEquals(new IntValue(0), state.getOut().get(4));
     }
 
     @Test
