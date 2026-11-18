@@ -20,7 +20,8 @@ public class MyHeap implements IHeap {
         heap = new HashMap<>(content);
     }
 
-    @Override public IValue get(int address) {
+    @Override public IValue get(int address) throws ADTException {
+        if (!heap.containsKey(address)) throw new ADTException("No such address " + address);
         return heap.get(address);
     }
 

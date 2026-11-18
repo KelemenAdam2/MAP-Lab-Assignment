@@ -6,6 +6,8 @@ import model.PrgState;
 import model.stmt.IStmt;
 import repository.IRepository;
 
+import static controller.GarbageCollector.*;
+
 public record Controller(IRepository repo, boolean dflag) {
 
     public void oneStep(PrgState state) throws MyException {
@@ -18,9 +20,12 @@ public record Controller(IRepository repo, boolean dflag) {
     public void allStep() throws MyException {
         PrgState prg = repo.getCrtPrg();
         repo.logPrgStateExec();
-        display(prg);
         while (!prg.getExeStack().isEmpty()) {
             oneStep(prg);
+            repo.logPrgStateExec();
+            prg.getHeap().setContent(safeGarbageCollector(
+                    getAddrFromSymTable(prg.getSymTable().toMap().values()),
+                    prg.getHeap().getContent()));
             repo.logPrgStateExec();
             display(prg);
         }
