@@ -5,7 +5,6 @@ import exceptions.StatementException;
 import model.PrgState;
 import model.stmt.IStmt;
 import repository.IRepository;
-
 import static controller.GarbageCollector.*;
 
 public record Controller(IRepository repo, boolean dflag) {

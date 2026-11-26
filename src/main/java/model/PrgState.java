@@ -1,11 +1,14 @@
 package model;
 
+import exceptions.MyException;
+import exceptions.StatementException;
 import model.adt.*;
 import model.stmt.IStmt;
 import model.value.IValue;
 import model.value.StringValue;
 
 import java.io.BufferedReader;
+import java.util.Optional;
 
 public class PrgState {
     private IStack<IStmt> exeStack;
@@ -15,6 +18,11 @@ public class PrgState {
     private IHeap heap;
     private final IStmt originalProgram;
 
+    private final int id;
+    private static int nextId = 1;
+
+    private static synchronized int newId() { return nextId++; }
+
     public PrgState(IStack<IStmt> exeStack, IDictionary<String, IValue> symTable, IList<IValue> out, IDictionary<StringValue, BufferedReader> fileTable, IHeap heap, IStmt program) {
         this.exeStack = exeStack;
         this.symTable = symTable;
@@ -23,6 +31,7 @@ public class PrgState {
         this.heap = heap;
         this.originalProgram = program;
         exeStack.push(program);
+        this.id = newId();
     }
 
     public static PrgState of(IStmt program) {
@@ -79,7 +88,8 @@ public class PrgState {
                 Out:      %s
                 FileTable: %s
                 Heap: %s
-                ---------------------""".formatted(exeStack, symTable, out, fileTable, heap);
+                Id: %s
+                ---------------------""".formatted(exeStack, symTable, out, fileTable, heap, id);
     }
 
     public String toLogString() {
@@ -95,8 +105,17 @@ public class PrgState {
         fileTable.toMap().keySet().forEach(f -> sb.append(f.val()).append('\n'));
         heap.getContent().forEach((i, v) ->
                 sb.append(i).append(" --> ").append(v).append('\n'));
+        sb.append("Id:").append(id).append("\n");
         return sb.toString();
     }
 
 
+    public int getId() { return id; }
+    public boolean isNotCompleted() { return !exeStack.isEmpty(); }
+    public Optional<PrgState> oneStep() throws MyException {
+        if (exeStack.isEmpty())
+            throw new StatementException("program state stack is empty");
+        IStmt crtStmt = exeStack.pop();
+        return crtStmt.execute(this);
+    }
 }
