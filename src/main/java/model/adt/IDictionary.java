@@ -11,4 +11,5 @@ public interface IDictionary<K, V>{
     void update(K k, V v) throws ADTException;
     void remove(K key) throws ADTException;
     Map<K, V> toMap();
+    IDictionary<K, V> copy();
 }

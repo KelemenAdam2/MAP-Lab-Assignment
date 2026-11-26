@@ -33,4 +33,10 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     @Override public Map<K, V> toMap(){
         return Map.copyOf(dict);
     }
+
+    @Override public IDictionary<K, V> copy(){
+        MyDictionary<K, V> copy = new MyDictionary<>();
+        copy.dict.putAll(this.dict);
+        return copy;
+    }
 }
