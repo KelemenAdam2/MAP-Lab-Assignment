@@ -111,4 +111,18 @@ public class Examples {
                                             new AssignStmt("v", new ArithExp(ArithOp.SUB,
                                                     new VarExp("v"), new ValueExp(new IntValue(1)))))),
                                     new PrintStmt(new VarExp("v")))));
+
+    // Ex11: int v; Ref int a; v=10; new(a,22); fork(wH(a,30); v=32; print(v); print(rH(a))); print(v); print(rH(a))
+    public static final IStmt EX11 =
+            new CompStmt(new VarDeclStmt("v", new IntType()),
+                    new CompStmt(new VarDeclStmt("a", new RefType(new IntType())),
+                            new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(10))),
+                                    new CompStmt(new NewStmt("a", new ValueExp(new IntValue(22))),
+                                            new CompStmt(new ForkStmt(
+                                                    new CompStmt(new WriteHeapStmt("a", new ValueExp(new IntValue(30))),
+                                                            new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(32))),
+                                                                    new CompStmt(new PrintStmt(new VarExp("v")),
+                                                                            new PrintStmt(new ReadHeapExp(new VarExp("a"))))))),
+                                                    new CompStmt(new PrintStmt(new VarExp("v")),
+                                                            new PrintStmt(new ReadHeapExp(new VarExp("a")))))))));
 }

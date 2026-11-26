@@ -94,6 +94,7 @@ public class PrgState {
 
     public String toLogString() {
         var sb = new StringBuilder();
+        sb.append("Id: ").append(id).append("\n");
         sb.append("ExeStack:\n");
         exeStack.toList().forEach(s -> sb.append(s).append('\n'));
         sb.append("SymTable:\n");
@@ -105,7 +106,6 @@ public class PrgState {
         fileTable.toMap().keySet().forEach(f -> sb.append(f.val()).append('\n'));
         heap.getContent().forEach((i, v) ->
                 sb.append(i).append(" --> ").append(v).append('\n'));
-        sb.append("Id:").append(id).append("\n");
         return sb.toString();
     }
 

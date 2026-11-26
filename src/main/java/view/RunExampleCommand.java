@@ -19,7 +19,7 @@ public class RunExampleCommand extends Command {
         executed = true;
         try {
             controller.allStep();
-        } catch (MyException e) { // errors the controller cannot solve
+        } catch (MyException | InterruptedException e) { // errors the controller cannot solve
             System.out.println("Error: " + e.getMessage());
         }
     }

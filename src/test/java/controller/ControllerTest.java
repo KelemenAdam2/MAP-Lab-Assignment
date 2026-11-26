@@ -44,7 +44,7 @@ class ControllerTest {
     }
 
 
-    private PrgState run(IStmt program) throws MyException {
+    private PrgState run(IStmt program) throws MyException, InterruptedException {
         PrgState state = PrgState.of(program);
         var repo = new Repository(state, dir.resolve("log.txt").toString());
         new Controller(repo, false).allStep(); // display off
@@ -52,7 +52,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample1PrintsTwo() throws MyException {
+    void completeExecutionOfExample1PrintsTwo() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX1);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
@@ -60,7 +60,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample2PrintsEighteen() throws MyException {
+    void completeExecutionOfExample2PrintsEighteen() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX2);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
@@ -68,7 +68,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample3PrintsTwo() throws MyException {
+    void completeExecutionOfExample3PrintsTwo() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX3);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
@@ -82,7 +82,7 @@ class ControllerTest {
     }
 
     @Test
-    void fileExampleReadsBothNumbersAndClosesTheFile() throws MyException, IOException {
+    void fileExampleReadsBothNumbersAndClosesTheFile() throws MyException, InterruptedException, IOException {
         Path in = dir.resolve("test.in");
         Files.writeString(in, "15\n50\n");
         PrgState s = run(Examples.fileExample(in.toString()));
@@ -92,7 +92,7 @@ class ControllerTest {
     }
 
     @Test
-    void fileExampleWithEmptyFilePrintsZeroZero() throws MyException, IOException {
+    void fileExampleWithEmptyFilePrintsZeroZero() throws MyException, InterruptedException, IOException {
         Path in = dir.resolve("empty.in");
         Files.writeString(in, "");
         PrgState s = run(Examples.fileExample(in.toString()));
@@ -102,7 +102,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample5PrintsFive() throws MyException {
+    void completeExecutionOfExample5PrintsFive() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX5);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
@@ -110,7 +110,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample6PrintsRefValues() throws MyException {
+    void completeExecutionOfExample6PrintsRefValues() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX6);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(2, state.getOut().size());
@@ -119,7 +119,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample7PrintsTwentyAndTwentyFive() throws MyException {
+    void completeExecutionOfExample7PrintsTwentyAndTwentyFive() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX7);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(2, state.getOut().size());
@@ -128,7 +128,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample8PrintsTwentyAndThirtyFive() throws MyException {
+    void completeExecutionOfExample8PrintsTwentyAndThirtyFive() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX8);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(2, state.getOut().size());
@@ -137,7 +137,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample9PrintsTwenty() throws MyException {
+    void completeExecutionOfExample9PrintsTwenty() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX9);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
@@ -145,7 +145,7 @@ class ControllerTest {
     }
 
     @Test
-    void completeExecutionOfExample10PrintsFourThreeTwoOneZero() throws MyException {
+    void completeExecutionOfExample10PrintsFourThreeTwoOneZero() throws MyException, InterruptedException {
         PrgState state = run(Examples.EX10);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(5, state.getOut().size());
@@ -157,7 +157,7 @@ class ControllerTest {
     }
 
     @Test
-    void logFileContainsTheFourSectionsInOrder() throws MyException, IOException {
+    void logFileContainsTheFourSectionsInOrder() throws MyException, InterruptedException, IOException {
         run(Examples.EX1);
         String log = Files.readString(dir.resolve("log.txt"));
         int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
