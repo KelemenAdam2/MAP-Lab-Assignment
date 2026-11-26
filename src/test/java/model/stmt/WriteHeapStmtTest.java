@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WriteHeapStmtTest {
     private PrgState state;
@@ -31,7 +32,7 @@ class WriteHeapStmtTest {
 
         assertEquals(new IntValue(20), state.getHeap().get(1));
 
-        new WriteHeapStmt("v", new ValueExp(new IntValue(30))).execute(state);
+        assertTrue(new WriteHeapStmt("v", new ValueExp(new IntValue(30))).execute(state).isEmpty());
         assertEquals(new IntValue(30), state.getHeap().get(1));
     }
 

@@ -1,15 +1,27 @@
 package controller;
 
+import exceptions.MyException;
+import model.PrgState;
+import model.adt.MyDictionary;
+import model.adt.MyStack;
+import model.exp.ReadHeapExp;
+import model.exp.ValueExp;
+import model.exp.VarExp;
+import model.stmt.*;
 import model.type.IntType;
 import model.type.RefType;
 import model.value.IValue;
 import model.value.IntValue;
 import model.value.RefValue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import repository.Repository;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -90,5 +102,52 @@ class GarbageCollectorTest {
         Map<Integer, IValue> kept = GarbageCollector.safeGarbageCollector(roots, heap);
 
         assertTrue(kept.isEmpty());
+    }
+
+    @Test
+    void locationReachableOnlyFromChildSymTableIsKept() throws MyException {
+        PrgState parent = PrgState.of(new NopStmt());
+        PrgState child = new PrgState(
+                new MyStack<>(),
+                new MyDictionary<>(),
+                parent.getOut(),
+                parent.getFileTable(),
+                parent.getHeap(),
+                new NopStmt()
+        );
+
+        int childAddr = child.getHeap().allocate(new IntValue(99));
+        int unreachableAddr = parent.getHeap().allocate(new IntValue(123));
+        child.getSymTable().put("c", new RefValue(childAddr, new IntType()));
+
+        List<IValue> allSymTableValues = Stream.of(parent, child)
+                .flatMap(p -> p.getSymTable().toMap().values().stream())
+                .toList();
+        Set<Integer> roots = GarbageCollector.getAddrFromSymTable(allSymTableValues);
+        Map<Integer, IValue> kept = GarbageCollector.safeGarbageCollector(roots, parent.getHeap().getContent());
+
+        assertTrue(kept.containsKey(childAddr));
+        assertFalse(kept.containsKey(unreachableAddr));
+    }
+
+    @Test
+    void schedulerKeepsLocationReachableOnlyFromChildThread(@TempDir Path dir) throws MyException, InterruptedException {
+        IStmt childProgram = new CompStmt(
+                new VarDeclStmt("c", new RefType(new IntType())),
+                new CompStmt(
+                        new NewStmt("c", new ValueExp(new IntValue(99))),
+                        new PrintStmt(new ReadHeapExp(new VarExp("c")))
+                )
+        );
+        IStmt program = new CompStmt(
+                new ForkStmt(childProgram),
+                new CompStmt(new NopStmt(), new CompStmt(new NopStmt(), new NopStmt()))
+        );
+
+        PrgState mainState = PrgState.of(program);
+        var repo = new Repository(mainState, dir.resolve("gc_log.txt").toString());
+        new Controller(repo, false).allStep();
+
+        assertEquals(List.of(new IntValue(99)), mainState.getOut().toList());
     }
 }

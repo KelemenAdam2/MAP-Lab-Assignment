@@ -19,9 +19,9 @@ class NopStmtTest {
     @Test
     void executeLeavesStateUnchanged() throws MyException {
         IStmt nop = new NopStmt();
-        PrgState result = nop.execute(state);
+        var result = nop.execute(state);
 
-        assertSame(state, result);
-        assertTrue(result.getExeStack().isEmpty());
+        assertTrue(result.isEmpty());
+        assertTrue(state.getExeStack().isEmpty());
     }
 }

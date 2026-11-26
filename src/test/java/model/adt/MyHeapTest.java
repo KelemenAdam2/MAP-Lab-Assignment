@@ -7,10 +7,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MyHeapTest {
+class  MyHeapTest {
     private MyHeap heap;
 
     @BeforeEach
@@ -65,5 +67,15 @@ class MyHeapTest {
         assertEquals(content, heap.getContent());
         assertEquals(new IntValue(100), heap.get(1));
         assertEquals(new IntValue(200), heap.get(2));
+    }
+
+    @Test
+    void concurrentAllocationsGetDistinctAddresses() {
+        IHeap concurrentHeap = new MyHeap();
+        try (var executor = Executors.newFixedThreadPool(8)) {
+            IntStream.range(0, 10_000).forEach(i ->
+                    executor.submit(() -> concurrentHeap.allocate(new IntValue(i))));
+        }
+        assertEquals(10_000, concurrentHeap.getContent().size());
     }
 }

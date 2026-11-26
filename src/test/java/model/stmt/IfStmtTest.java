@@ -26,7 +26,7 @@ class IfStmtTest {
         IStmt elseBranch = new PrintStmt(new ValueExp(new IntValue(2)));
         IStmt ifStmt = new IfStmt(new ValueExp(new BoolValue(true)), thenBranch, elseBranch);
 
-        ifStmt.execute(state);
+        assertTrue(ifStmt.execute(state).isEmpty());
         assertEquals(thenBranch, state.getExeStack().pop());
     }
 

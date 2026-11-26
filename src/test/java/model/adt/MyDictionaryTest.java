@@ -47,4 +47,23 @@ class MyDictionaryTest {
     void isDefinedReturnsFalseForMissingKey() {
         assertFalse(dict.isDefined("b"));
     }
+
+    @Test
+    void copyCreatesIndependentDictionaryWithSameEntries() throws ADTException {
+        dict.put("a", 10);
+        dict.put("b", 20);
+
+        IDictionary<String, Integer> copy = dict.copy();
+
+        assertNotSame(dict, copy);
+        assertEquals(dict.toMap(), copy.toMap());
+
+        copy.update("a", 99);
+        copy.put("c", 30);
+
+        assertEquals(10, dict.lookup("a"));
+        assertFalse(dict.isDefined("c"));
+        assertEquals(99, copy.lookup("a"));
+        assertEquals(30, copy.lookup("c"));
+    }
 }

@@ -45,7 +45,7 @@ class ReadFileStmtTest {
         new VarDeclStmt("x", new IntType()).execute(state);
         new OpenRFileStmt(fileExp).execute(state);
 
-        new ReadFileStmt(fileExp, "x").execute(state);
+        assertTrue(new ReadFileStmt(fileExp, "x").execute(state).isEmpty());
         assertEquals(new IntValue(10), state.getSymTable().lookup("x"));
 
         new ReadFileStmt(fileExp, "x").execute(state);

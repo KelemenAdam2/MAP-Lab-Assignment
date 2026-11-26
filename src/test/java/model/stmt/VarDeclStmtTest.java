@@ -26,7 +26,7 @@ class VarDeclStmtTest {
     @Test
     void declaresIntVariableWithDefaultValue() throws MyException {
         IStmt stmt = new VarDeclStmt("x", new IntType());
-        stmt.execute(state);
+        assertTrue(stmt.execute(state).isEmpty());
         assertTrue(state.getSymTable().isDefined("x"));
         assertEquals(new IntValue(0), state.getSymTable().lookup("x"));
     }

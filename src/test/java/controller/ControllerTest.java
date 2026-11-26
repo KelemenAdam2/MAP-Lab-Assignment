@@ -9,6 +9,7 @@ import model.adt.MyList;
 import model.adt.MyStack;
 import model.stmt.IStmt;
 import model.stmt.NopStmt;
+import model.value.IValue;
 import model.value.IntValue;
 import model.value.RefValue;
 import model.type.IntType;
@@ -22,6 +23,10 @@ import view.Examples;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -158,5 +163,59 @@ class ControllerTest {
         int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
                 c = log.indexOf("Out:"), d = log.indexOf("FileTable:");
         assertTrue(0 <= a && a < b && b < c && c < d);
+    }
+
+    @Test
+    void removeCompletedPrgKeepsOnlyRunningStates() throws MyException {
+        PrgState running = PrgState.of(new NopStmt());
+        PrgState completed = PrgState.of(new NopStmt());
+        completed.getExeStack().pop();
+
+        var repo = new Repository(running, dir.resolve("log_remove.txt").toString());
+        var controller = new Controller(repo, false);
+
+        List<PrgState> remaining = controller.removeCompletedPrg(List.of(completed, running));
+
+        assertEquals(1, remaining.size());
+        assertSame(running, remaining.getFirst());
+    }
+
+    @Test
+    void ex11ProducesExpectedSymTablesHeapAndOutput() throws MyException, InterruptedException, IOException {
+        PrgState mainState = PrgState.of(Examples.EX11);
+        Path logPath = dir.resolve("log11.txt");
+        var repo = new Repository(mainState, logPath.toString());
+        var controller = new Controller(repo, false);
+
+        controller.allStep();
+
+        // Main thread SymTable: {v -> 10, a -> (1, int)}
+        assertEquals(new IntValue(10), mainState.getSymTable().lookup("v"));
+        assertEquals(new RefValue(1, new IntType()), mainState.getSymTable().lookup("a"));
+
+        // Child thread SymTable (last round state kept in repository): {v -> 32, a -> (1, int)}
+        PrgState childState = repo.getPrgList().stream()
+                .filter(p -> p.getId() != mainState.getId())
+                .findFirst()
+                .orElseThrow();
+        assertEquals(new IntValue(32), childState.getSymTable().lookup("v"));
+        assertEquals(new RefValue(1, new IntType()), childState.getSymTable().lookup("a"));
+
+        // Heap: {1 -> 30}
+        assertEquals(Map.of(1, new IntValue(30)), mainState.getHeap().getContent());
+
+        // Out: {10, 30, 32, 30} (order of prints in the same round may vary)
+        List<IValue> out = mainState.getOut().toList();
+        assertEquals(4, out.size());
+        Map<IValue, Long> counts = out.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        assertEquals(1L, counts.get(new IntValue(10)));
+        assertEquals(2L, counts.get(new IntValue(30)));
+        assertEquals(1L, counts.get(new IntValue(32)));
+
+        // Log file records both thread ids
+        String log = Files.readString(logPath);
+        assertTrue(log.contains("Id: " + mainState.getId()));
+        assertTrue(log.contains("Id: " + childState.getId()));
     }
 }

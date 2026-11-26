@@ -31,7 +31,7 @@ class WhileStmtTest {
         state.getExeStack().push(stmt);
         while (!state.getExeStack().isEmpty()) {
             IStmt current = state.getExeStack().pop();
-            current.execute(state);
+            assertTrue(current.execute(state).isEmpty());
         }
     }
 

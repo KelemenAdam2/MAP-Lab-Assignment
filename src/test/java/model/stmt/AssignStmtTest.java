@@ -24,7 +24,7 @@ class AssignStmtTest {
     void successfulAssignmentUpdatesVariable() throws MyException {
         state.getSymTable().put("x", new IntValue(0));
         IStmt stmt = new AssignStmt("x", new ValueExp(new IntValue(42)));
-        stmt.execute(state);
+        assertTrue(stmt.execute(state).isEmpty());
         assertEquals(new IntValue(42), state.getSymTable().lookup("x"));
     }
 

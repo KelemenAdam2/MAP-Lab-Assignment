@@ -23,7 +23,7 @@ class CompStmtTest {
         IStmt s1 = new NopStmt();
         IStmt s2 = new PrintStmt(new ValueExp(new IntValue(1)));
         IStmt comp = new CompStmt(s1, s2);
-        comp.execute(state);
+        assertTrue(comp.execute(state).isEmpty());
 
         assertEquals(s1, state.getExeStack().pop());
         assertEquals(s2, state.getExeStack().pop());

@@ -37,7 +37,7 @@ class OpenRFileStmtTest {
     @Test
     void addsFileToFileTable() throws MyException, IOException {
         IStmt stmt = new OpenRFileStmt(fileExp);
-        stmt.execute(state);
+        assertTrue(stmt.execute(state).isEmpty());
 
         assertTrue(state.getFileTable().isDefined(fileStringVal));
         assertNotNull(state.getFileTable().lookup(fileStringVal));
@@ -54,7 +54,7 @@ class OpenRFileStmtTest {
     @Test
     void fileAlreadyOpenThrows() throws MyException, IOException {
         IStmt stmt = new OpenRFileStmt(fileExp);
-        stmt.execute(state);
+        assertTrue(stmt.execute(state).isEmpty());
 
         assertThrows(StatementException.class, () -> stmt.execute(state));
         state.getFileTable().lookup(fileStringVal).close();

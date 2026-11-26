@@ -21,7 +21,7 @@ class PrintStmtTest {
     @Test
     void appendsEvaluatedExpressionToOut() throws MyException {
         IStmt stmt = new PrintStmt(new ValueExp(new IntValue(42)));
-        stmt.execute(state);
+        assertTrue(stmt.execute(state).isEmpty());
 
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(42), state.getOut().get(0));

@@ -39,7 +39,7 @@ class CloseRFileStmtTest {
         new OpenRFileStmt(fileExp).execute(state);
         assertTrue(state.getFileTable().isDefined(fileStringVal));
 
-        new CloseRFileStmt(fileExp).execute(state);
+        assertTrue(new CloseRFileStmt(fileExp).execute(state).isEmpty());
         assertFalse(state.getFileTable().isDefined(fileStringVal));
     }
 

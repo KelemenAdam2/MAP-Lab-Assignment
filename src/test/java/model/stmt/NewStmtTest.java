@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NewStmtTest {
     private PrgState state;
@@ -28,7 +29,7 @@ class NewStmtTest {
     @Test
     void allocatesAndUpdatesTheVariable() throws MyException {
         new VarDeclStmt("v", new RefType(new IntType())).execute(state);
-        new NewStmt("v", new ValueExp(new IntValue(20))).execute(state);
+        assertTrue(new NewStmt("v", new ValueExp(new IntValue(20))).execute(state).isEmpty());
 
         assertEquals(new RefValue(1, new IntType()), state.getSymTable().lookup("v"));
         assertEquals(new IntValue(20), state.getHeap().get(1));
