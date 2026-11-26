@@ -7,9 +7,11 @@ import model.exp.IExp;
 import model.value.IValue;
 import model.value.RefValue;
 
+import java.util.Optional;
+
 public record WriteHeapStmt(String varName, IExp exp) implements IStmt { // S12
     @Override
-    public PrgState execute(PrgState state) throws MyException {
+    public Optional<PrgState> execute(PrgState state) throws MyException {
         var symTable = state.getSymTable();
         var heap = state.getHeap();
         if (!symTable.isDefined(varName))
@@ -23,7 +25,7 @@ public record WriteHeapStmt(String varName, IExp exp) implements IStmt { // S12
         if (!heap.isDefined(ref.address()))
             throw new StatementException("rH: " + exp + " is not a defined address");
         heap.update(ref.address(), value);
-        return state;
+        return Optional.empty();
     }
     @Override public String toString() { return "wH(" + varName + ", " + exp + ")"; }
 }

@@ -6,10 +6,12 @@ import model.PrgState;
 import model.exp.IExp;
 import model.value.IValue;
 
+import java.util.Optional;
+
 public record AssignStmt(String id, IExp exp) implements IStmt { // S2
 
     @Override
-    public PrgState execute(PrgState state) throws MyException {
+    public Optional<PrgState> execute(PrgState state) throws MyException {
         var symTable = state.getSymTable();
         if (!symTable.isDefined(id))
             throw new StatementException("variable " + id + " was not declared");
@@ -18,7 +20,7 @@ public record AssignStmt(String id, IExp exp) implements IStmt { // S2
             throw new StatementException("declared type of variable " + id
                     + " and type of the assigned expression do not match");
         symTable.update(id, val);
-        return state;
+        return Optional.empty();
     }
     @Override public String toString() { return id + " = " + exp; }
 }

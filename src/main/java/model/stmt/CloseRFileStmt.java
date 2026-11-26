@@ -6,10 +6,11 @@ import model.PrgState;
 import model.exp.IExp;
 import model.value.StringValue;
 import java.io.IOException;
+import java.util.Optional;
 
 public record CloseRFileStmt(IExp exp) implements IStmt {
     @Override
-    public PrgState execute(PrgState state) throws MyException {
+    public Optional<PrgState> execute(PrgState state) throws MyException {
         if (!(exp.eval(state.getSymTable(),  state.getHeap()) instanceof StringValue fileName))
             throw new StatementException("closeRFile: " + exp + " is not a string");
 
@@ -25,7 +26,7 @@ public record CloseRFileStmt(IExp exp) implements IStmt {
             throw new StatementException("closeRFile: cannot close " + fileName
                     + ": " + e.getMessage());
         }
-        return state;
+        return Optional.empty();
     }
     @Override public String toString() { return "closeRFile(" + exp + ")"; }
 }

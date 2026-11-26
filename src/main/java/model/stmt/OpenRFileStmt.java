@@ -9,10 +9,11 @@ import model.value.StringValue;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Optional;
 
 public record OpenRFileStmt(IExp exp) implements IStmt { // S8
     @Override
-    public PrgState execute(PrgState state) throws MyException {
+    public Optional<PrgState> execute(PrgState state) throws MyException {
         if (!(exp.eval(state.getSymTable(),  state.getHeap()) instanceof StringValue fileName))
             throw new StatementException("openRFile: " + exp + " is not a string");
 
@@ -29,7 +30,7 @@ public record OpenRFileStmt(IExp exp) implements IStmt { // S8
             throw new StatementException("openRFile: cannot open " + fileName
                     + ": " + e.getMessage());
         }
-        return state;
+        return Optional.empty();
     }
     @Override public String toString() { return "openRFile(" + exp + ")"; }
 }

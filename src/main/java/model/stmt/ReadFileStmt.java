@@ -7,10 +7,11 @@ import model.exp.IExp;
 import model.value.IntValue;
 import model.value.StringValue;
 import java.io.IOException;
+import java.util.Optional;
 
 public record ReadFileStmt(IExp exp, String varName) implements IStmt {// S9
     @Override
-    public PrgState execute(PrgState state) throws MyException {
+    public Optional<PrgState> execute(PrgState state) throws MyException {
         if (!(exp.eval(state.getSymTable(),  state.getHeap()) instanceof StringValue fileName))
             throw new StatementException("ReadFile: " + exp + " is not a string");
 
@@ -34,7 +35,7 @@ public record ReadFileStmt(IExp exp, String varName) implements IStmt {// S9
         } catch (NumberFormatException e) {
             throw new StatementException("ReadFile: " + fileName + " is not a number");
         }
-        return state;
+        return Optional.empty();
     }
     @Override public String toString() { return "ReadFile(" + exp + ")"; }
 }
